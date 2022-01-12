@@ -187,10 +187,10 @@ int main(int argc, const char * argv[])
     
     Employee* department[] =
     {
-        new PermanentEmployee("Harry", "Potter", 17, "wizard", 20000),
-        new PermanentEmployee("Ronald", "Weasley", 17, "wizard", 10000),
-        new PermanentEmployee("Hermione", "Granger", 17, "wizard", 15000),
-        new HourlyEmployee("Neville", "Longbottom", 17, "wizard", 1000, 8),
+        new PermanentEmployee("Chester", "Bennington", 35, "singer", 20000),
+        new PermanentEmployee("Mike", "Shinoda", 34, "pianist", 19000),
+        new PermanentEmployee("Joe", "Hahn", 38, "sampler", 15000),
+        new HourlyEmployee("David", "Farrell", 38, "guitarist", 1000, 8),
     };
     
     double total_salary = 0;
