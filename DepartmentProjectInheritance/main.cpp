@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-#define HUMAN_TAKE_PARAMETERS const std::string& last_name, const std::string& first_name, unsigned int age    //Принимаемые переметры конструктора Human
+#define HUMAN_TAKE_PARAMETERS const std::string& last_name, const std::string& first_name, unsigned int age //Принимаемые переметры конструктора Human
 #define HUMAN_GIVE_PARAMETERS last_name, first_name, age
 
 #define EMPLOYEE_TAKE_PARAMETERS const std::string& position
@@ -48,19 +48,28 @@ public:
         set_last_name(last_name);
         set_first_name(first_name);
         set_age(age);
-        cout << "HConstructor:\t" << this << endl;
+        //cout << "HConstructor:\t" << this << endl;
     }
     virtual ~Human()
     {
-        cout << "HDestructor:\t" << this << endl;
+        //cout << "HDestructor:\t" << this << endl;
     }
 
     //                Methods:
-    virtual void print()const
+    virtual ostream& print(ostream& os)const
     {
-        cout << last_name << " " << first_name << " " << age << " лет" << endl;
+        os << last_name << " " << first_name << " " << age << " лет" << endl;
+        return os;
     }
 };
+
+// Overload operator << in order to print data using cout:
+ostream& operator<<(ostream& os, const Human& obj)
+{
+    return obj.print(os);
+    //return os << obj.get_last_name() << " " << obj.get_first_name() << " " << obj.get_age() << " ages.";
+}
+
 
 class Employee: public Human //НАСЛЕДОВАНИЕ. С каким максимальным уровнем доступа будут наследованы все остальные свойства класса.
 {
@@ -80,18 +89,30 @@ public:
     Employee(HUMAN_TAKE_PARAMETERS, EMPLOYEE_TAKE_PARAMETERS):Human(HUMAN_GIVE_PARAMETERS) // ДЕЛЕГИРОВАНИЕ
     {
         set_position(position);
-        cout << "EConstructor: tab" << this << endl;
+        //cout << "EConstructor: tab" << this << endl;
     }
     ~Employee()
     {
-        cout << "EDestrustor: tab" << this << endl;
+        //cout << "EDestrustor: tab" << this << endl;
     }
-    void print()const
+//    void print()const
+//    {
+//        Human::print(); // показываем, что print находится в именованном пространстве имен.
+//        cout << position << endl;
+//    }
+    ostream& print(ostream& os)const
     {
-        Human::print(); // показываем, что print находится в именованном пространстве имен.
-        cout << position << endl;
+        Human::print(os); // показываем, что print находится в именованном пространстве имен.
+        os << position << endl;
+        return os;
     }
 };
+
+//ostream& operator<<(ostream& os, const Employee& obj)
+//{
+//    os << (Human)obj;
+//    return os << obj.get_position() << endl;
+//}
 
 #define PERMANENT_EMPLOYEE_TAKE_PARAMETERS double salary
 #define PERMANENT_EMPLOYEE_GIVE_PARAMETERS salary
@@ -114,24 +135,28 @@ public:
                       PERMANENT_EMPLOYEE_TAKE_PARAMETERS) :Employee(HUMAN_GIVE_PARAMETERS, EMPLOYEE_GIVE_PARAMETERS)
     {
         set_salary(salary);
-        cout << "PEConstructor:tab" << this << endl;
+        //cout << "PEConstructor:tab" << this << endl;
     }
     ~PermanentEmployee()
     {
-        cout << "PEDestructor: \t" << this << endl;
+        //cout << "PEDestructor: \t" << this << endl;
     }
     
-    void print()const
+    ostream& print(ostream& os)const
     {
-        Employee::print();
-        cout << salary;
-        cout << endl;
+        Employee::print(os);
+        os << salary;
+        return os;
     }
 };
 
+//ostream& operator<<(ostream& os, const PermanentEmployee& obj)
+//{
+//    return os << (Employee&)obj << " " << obj.get_salary();
+//}
+
 #define HOURLY_EMPLOYEE_TAKE_PARAMETERS double rate, int hours
 #define HOURLY_EMPLOYEE_GIVE_PARAMETERS rate, hours
-
 
 class HourlyEmployee : public Employee
 {
@@ -167,24 +192,29 @@ public:
     {
         set_rate(rate);
         set_hours(hours);
-        cout << "HEConstructor: \t" << this << endl;
+        //cout << "HEConstructor: \t" << this << endl;
     }
     ~HourlyEmployee()
     {
-        cout << "HEDestructor: \t" << this << endl;
+        //cout << "HEDestructor: \t" << this << endl;
     
     }
-void print() const
+    ostream& print(ostream& os) const
     {
-        Employee::print();
-        cout << "Rate: " << rate << ". Worked out: " << hours << " hours. Salary: " << get_salary();
-        cout << endl;
+        Employee::print(os);
+        os << "Rate: " << rate << ". Worked out: " << hours << " hours. Salary: " << get_salary();
+        return os;
     }
 };
+//ostream& operator<<(ostream& os, const HourlyEmployee& obj)
+//{
+//    return os << (Employee&)obj << " " << "Rate: " << obj.get_rate() << "hоurs: " << obj.get_hours() << "total: " << obj.get_salary(); // Вывод с рейтингом, часами и зарплатой
+//}
+
 
 int main(int argc, const char * argv[])
 {
-    
+    // Generalisation
     Employee* department[] =
     {
         new PermanentEmployee("Chester", "Bennington", 35, "singer", 20000),
@@ -201,17 +231,45 @@ int main(int argc, const char * argv[])
     {
         cout << "\n_______________________" << endl;
         
-        department[i] -> print();
+        cout << *department[i] << endl;
+
+//        if (typeid(*department[i]) == typeid(PermanentEmployee))
+//        {
+//            cout << *department[i] << endl;
+//        }
+//        if (typeid(*department[i]) == typeid(HourlyEmployee))
+//        {
+//            cout << *department[i] << endl;
+//        }
+        
+//        // Specialisation (DOWNCAST)
+//        if (typeid(*department[i]) == typeid(PermanentEmployee)) // Определяем тип работника и выводим определенный вывод под этого работника, или только с зарплатой или с зарплатой и часами
+//        {
+//            cout << *dynamic_cast<PermanentEmployee*>(department[i]) << endl;
+//        }
+//        if (typeid(*department[i]) == typeid(HourlyEmployee))
+//        {
+//            cout << dynamic_cast<HourlyEmployee*>(department[i]) << endl;
+//        }
+        
+        // dynamic_cast<DerivedClass*>(BaseClass*); преобразует указатель на базовый класс в указатель на дочерний класс т.е. позволяет выполнить даункаст
+        
         total_salary += department[i] -> get_salary();
     }
     cout << "\n_______________________" << endl;
-    cout << "Common salary of the whole department of magic: " << total_salary << endl;
+    cout << "Common salary of the whole department: " << total_salary << endl;
     cout << "\n_______________________" << endl;
     
     for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
     {
         delete department[i];
     }
-    
     return 0;
 }
+
+// ДЗ:
+// 1.Реализовать операторы вывода используя полиморфизм, чтобы избавиться от dynamic cast
+// 2.Построить иерархию геометрических фигур: квадрат, прямоугольник, круг, треугольник. Для каждой фигуры вывести ее особые св-ва (первичные параметры) для квадрата - длина стороны, для круга - радиус, для треугольника стороны А, В, С, периметр, площадь и нарисовать каждую фигуру.
+
+
+
