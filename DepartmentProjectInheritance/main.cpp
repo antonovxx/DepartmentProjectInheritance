@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <fstream>
+
 using namespace std;
 
 #define HUMAN_TAKE_PARAMETERS const std::string& last_name, const std::string& first_name, unsigned int age //Принимаемые переметры конструктора Human
@@ -58,7 +60,14 @@ public:
     //                Methods:
     virtual ostream& print(ostream& os)const
     {
-        os << last_name << " " << first_name << " " << age << " лет" << endl;
+        //return os << last_name << " " << first_name << " " << age << " лет" << endl;
+        os.width(8);
+        os << left;
+        os << "Name: " << last_name << " ";
+        os.width(8);
+        os << first_name << " ";
+        os.width(5);
+        os << "Age: " << age << " years. ";
         return os;
     }
 };
@@ -103,7 +112,8 @@ public:
     ostream& print(ostream& os)const
     {
         Human::print(os); // показываем, что print находится в именованном пространстве имен.
-        os << position << endl;
+        os.width(5);
+        os << "Position: " << position << " ";
         return os;
     }
 };
@@ -145,7 +155,8 @@ public:
     ostream& print(ostream& os)const
     {
         Employee::print(os);
-        os << salary;
+        os.width(5);
+        os << "Salary: " << salary << " ";
         return os;
     }
 };
@@ -256,9 +267,21 @@ int main(int argc, const char * argv[])
         
         total_salary += department[i] -> get_salary();
     }
+    
+    
     cout << "\n_______________________" << endl;
     cout << "Common salary of the whole department: " << total_salary << endl;
     cout << "\n_______________________" << endl;
+    
+    ofstream fout("/Users/antonkurin/Documents/Cplusplus/DepartmentProjectInheritance/file.txt");
+    for (int i = 0; i < sizeof(department) /sizeof(Employee*); ++i) {
+        fout.width(20);
+        fout << left;
+        fout << string(typeid(*department[i]).name()) + ":" << *department[i] << endl;
+    }
+    fout.close();
+    
+    system("more /Users/antonkurin/Documents/Cplusplus/DepartmentProjectInheritance/file.txt");
     
     for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
     {
