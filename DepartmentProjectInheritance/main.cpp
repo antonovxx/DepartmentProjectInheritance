@@ -58,21 +58,44 @@ public:
     }
 
     //                Methods:
-    virtual ostream& print(ostream& os)const
+    virtual ostream& print(ostream& os)const // Вывод в консоль
     {
         //return os << last_name << " " << first_name << " " << age << " лет" << endl;
-        os.width(8);
+        os << "|| Name: " ;
+        os.width(12);
         os << left;
-        os << "|| Name: " << last_name << " ";
-        os.width(8);
-        os << first_name << " |";
+        
+        os << last_name << " ";
+        os.width(12);
+        os << first_name << "|";
+       // os.width(5);
+        os << "| Age: ";
         os.width(5);
-        os << "| Age: " << age << " years |";
+        os << age << " years |";
         return os;
     }
-    virtual istream& input (istream& is)
+    virtual ofstream& print(ofstream& os)const // Вывод в файл
     {
-        return is >> last_name >> first_name >> age;
+        //return os << last_name << " " << first_name << " " << age << " лет" << endl;
+        os.width(10); // метод в классе ios_base. Измеряется в знакопозициях
+        os << left; // манипулятор вывода
+        os << last_name;
+        os.width(15);
+        os << first_name;
+        os.width(5);
+        os << age;
+        return os;
+    }
+    
+    virtual istream& input (istream& is) // Ввод в консоль
+    {
+        cout << "Last name:  ";
+        is >> last_name;
+        cout << "First name: ";
+        is >> first_name;
+        cout << "Age:        ";
+        is >> age;
+        return is;
     }
 };
 
@@ -85,6 +108,10 @@ ostream& operator<<(ostream& os, const Human& obj)
 istream& operator>>(istream& is, Human& obj)
 {
     return obj.input(is);
+}
+ofstream& operator<<(ofstream& os, const Human& obj)
+{
+    return obj.print(os);
 }
 
 
@@ -121,13 +148,24 @@ public:
     ostream& print(ostream& os)const
     {
         Human::print(os); // показываем, что print находится в именованном пространстве имен.
-        os.width(5);
+        os.width(10);
+        os << left;
         os << "| Position: " << position << " |";
         return os;
     }
+    ofstream& print(ofstream& os)const
+    {
+        Human::print(os);
+        os.width(10);
+        os << left;
+        os << position;
+        return os;
+    }
+    
     istream& input(istream& is)
     {
         Human::input(is);
+        cout << "Position: ";
         return is >> position;
     }
 };
@@ -169,13 +207,22 @@ public:
     ostream& print(ostream& os)const
     {
         Employee::print(os);
-        os.width(5);
+        os.width(10);
+        os << left;
         os << "| Salary: " << salary << " ||";
+        return os;
+    }
+    ofstream& print(ofstream& os)const
+    {
+        Employee::print(os);
+        os.width(10);
+        os << salary;
         return os;
     }
     istream& input(istream& is)
     {
         Employee::input(is);
+        cout << "Salary: ";
         return is >> salary;
     }
 };
@@ -232,8 +279,8 @@ public:
     ostream& print(ostream& os) const
     {
         Employee::print(os) << " ";
-        os << right;
-        os.width(5);
+        os << left;
+        os.width(10);
         os << "|| Rate: " << rate << " |";
         os.width(10);
         os << "| Worked out: " << hours << " hours |";
@@ -241,10 +288,24 @@ public:
         os << "| Salary: " << get_salary() << " ||";
         return os;
     }
+    ofstream& print(ofstream& os) const
+    {
+        Employee::print(os);
+        os << right;
+        os.width(5);
+        os << rate;
+        os.width(10);
+        os << hours;
+        os.width(10);
+        os << get_salary();
+        return os;
+    }
     istream& input(istream& is)
     {
         Employee::input(is);
-        return is >> rate >> hours;
+        cout << "Rate:    ";
+        is >> rate >> hours;
+        return is;
     }
 };
 //ostream& operator<<(ostream& os, const HourlyEmployee& obj)
@@ -252,8 +313,12 @@ public:
 //    return os << (Employee&)obj << " " << "Rate: " << obj.get_rate() << "hоurs: " << obj.get_hours() << "total: " << obj.get_salary(); // Вывод с рейтингом, часами и зарплатой
 //}
 
+//#define SAVE_TO_FILE
+
 int main(int argc, const char * argv[])
 {
+#ifdef SAVE_TO_FILE
+    /*
     // Generalisation
     Employee* department[] =
     {
@@ -264,10 +329,11 @@ int main(int argc, const char * argv[])
     };
     
     // INPUT
-//    for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
-//    {
-//        cin >> *department[i];
-//    }
+    for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
+    {
+        //cout << "Введите работника " << typeid(*department[i]).name() << ":";
+        cin >> *department[i];
+    }
     
     double total_salary = 0;
     
@@ -314,9 +380,10 @@ int main(int argc, const char * argv[])
     // OUTPUT IN FILE
     ofstream fout("/Users/antonkurin/Documents/Cplusplus/DepartmentProjectInheritance/file.txt");
     for (int i = 0; i < sizeof(department) /sizeof(Employee*); ++i) {
-        fout.width(20);
+        fout.width(25);
         fout << left;
-        fout << string(typeid(*department[i]).name()) + ":" << *department[i] << endl;
+        fout << string(typeid(*department[i]).name()) + ":";
+        fout << *department[i] << endl;
     }
     fout.close();
     
@@ -328,12 +395,18 @@ int main(int argc, const char * argv[])
     {
         delete department[i];
     }
+    
+     */
+#endif //SAVE_TO_FILE
+    
+    
+    
+    
+    
+    
     return 0;
 }
 
-// ДЗ:
-// 1.Реализовать операторы вывода используя полиморфизм, чтобы избавиться от dynamic cast
-// 2.Построить иерархию геометрических фигур: квадрат, прямоугольник, круг, треугольник. Для каждой фигуры вывести ее особые св-ва (первичные параметры) для квадрата - длина стороны, для круга - радиус, для треугольника стороны А, В, С, периметр, площадь и нарисовать каждую фигуру.
 
 
 
