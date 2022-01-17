@@ -70,6 +70,10 @@ public:
         os << "Age: " << age << " years. ";
         return os;
     }
+    virtual istream& input (istream& is)
+    {
+        return is >> last_name >> first_name >> age;
+    }
 };
 
 // Overload operator << in order to print data using cout:
@@ -78,6 +82,11 @@ ostream& operator<<(ostream& os, const Human& obj)
     return obj.print(os);
     //return os << obj.get_last_name() << " " << obj.get_first_name() << " " << obj.get_age() << " ages.";
 }
+istream& operator>>(istream& is, Human& obj)
+{
+    return obj.input(is);
+}
+
 
 
 class Employee: public Human //НАСЛЕДОВАНИЕ. С каким максимальным уровнем доступа будут наследованы все остальные свойства класса.
@@ -115,6 +124,11 @@ public:
         os.width(5);
         os << "Position: " << position << " ";
         return os;
+    }
+    istream& input(istream& is)
+    {
+        Human::input(is);
+        return is >> position;
     }
 };
 
@@ -158,6 +172,11 @@ public:
         os.width(5);
         os << "Salary: " << salary << " ";
         return os;
+    }
+    istream& input(istream& is)
+    {
+        Employee::input(is);
+        return is >> salary;
     }
 };
 
@@ -216,12 +235,16 @@ public:
         os << "Rate: " << rate << ". Worked out: " << hours << " hours. Salary: " << get_salary();
         return os;
     }
+    istream& input(istream& is)
+    {
+        Employee::input(is);
+        return is >> rate >> hours;
+    }
 };
 //ostream& operator<<(ostream& os, const HourlyEmployee& obj)
 //{
 //    return os << (Employee&)obj << " " << "Rate: " << obj.get_rate() << "hоurs: " << obj.get_hours() << "total: " << obj.get_salary(); // Вывод с рейтингом, часами и зарплатой
 //}
-
 
 int main(int argc, const char * argv[])
 {
@@ -234,10 +257,19 @@ int main(int argc, const char * argv[])
         new HourlyEmployee("David", "Farrell", 38, "guitarist", 1000, 8),
     };
     
+    // INPUT
+    for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
+    {
+        cin >> *department[i];
+    }
+    
     double total_salary = 0;
+    
     
     // sizeof(department) / sizeof(Employee*) Делим размер массива в байтах на размер одного указателя и таким образом получаем размер массива в элементах
     
+    
+    // OUPUT
     for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
     {
         cout << "\n_______________________" << endl;
@@ -273,6 +305,7 @@ int main(int argc, const char * argv[])
     cout << "Common salary of the whole department: " << total_salary << endl;
     cout << "\n_______________________" << endl;
     
+    // OUTPUT IN FILE
     ofstream fout("/Users/antonkurin/Documents/Cplusplus/DepartmentProjectInheritance/file.txt");
     for (int i = 0; i < sizeof(department) /sizeof(Employee*); ++i) {
         fout.width(20);
@@ -282,6 +315,8 @@ int main(int argc, const char * argv[])
     fout.close();
     
     system("more /Users/antonkurin/Documents/Cplusplus/DepartmentProjectInheritance/file.txt");
+    
+    // CLEAR MEMORY
     
     for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
     {
