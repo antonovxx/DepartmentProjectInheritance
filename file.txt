@@ -1,4 +1,4 @@
-17PermanentEmployee:     Chester   Bennington     35   singer    20000     
-17PermanentEmployee:     Mike      Shinoda        34   pianist   19000     
-17PermanentEmployee:     Joe       Hahn           38   sampler   15000     
-14HourlyEmployee:        David     Farrell        38   guitarist  1000         8      8000
+PermanentEmployee:     Chester   Bennington     35   singer    20000     
+PermanentEmployee:     Mike      Shinoda        34   pianist   19000     
+PermanentEmployee:     Joe       Hahn           38   sampler   15000     
+HourlyEmployee:        David     Farrell        38   guitarist  1000         8      8000

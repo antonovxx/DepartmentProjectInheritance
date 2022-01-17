@@ -97,6 +97,11 @@ public:
         is >> age;
         return is;
     }
+    virtual std::ifstream& scan(std::ifstream& is)
+    {
+        is >> last_name >> first_name >> age;
+        return is;
+    }
 };
 
 // Overload operator << in order to print data using cout:
@@ -112,6 +117,10 @@ istream& operator>>(istream& is, Human& obj)
 ofstream& operator<<(ofstream& os, const Human& obj)
 {
     return obj.print(os);
+}
+ifstream& operator>>(ifstream& is, Human& obj)
+{
+    return obj.scan(is);
 }
 
 
@@ -167,6 +176,12 @@ public:
         Human::input(is);
         cout << "Position: ";
         return is >> position;
+    }
+    ifstream& scan(ifstream& is)
+    {
+        Human::scan(is);
+        is >> position;
+        return is;
     }
 };
 
@@ -224,6 +239,12 @@ public:
         Employee::input(is);
         cout << "Salary: ";
         return is >> salary;
+    }
+    ifstream& scan(ifstream& is)
+    {
+        Employee::scan(is);
+        is >> salary;
+        return is;
     }
 };
 
@@ -307,6 +328,13 @@ public:
         is >> rate >> hours;
         return is;
     }
+    
+    ifstream& scan(ifstream& is)
+    {
+        Employee::scan(is);
+        is >> rate >> hours;
+        return is;
+    }
 };
 //ostream& operator<<(ostream& os, const HourlyEmployee& obj)
 //{
@@ -314,6 +342,20 @@ public:
 //}
 
 //#define SAVE_TO_FILE
+
+Employee* EmployeeFactory(const string& type)
+{
+    Employee* employee = nullptr;
+    if(type.find("PermanentEmployee") != std::string::npos)
+    {
+        employee = new PermanentEmployee("", "", 0, "", 0);
+    }
+    if(type.find("HourlyEmployee") != std::string::npos)
+    {
+        employee = new HourlyEmployee("", "", 0, "", 0, 0);
+    }
+    return employee;
+} // Функция создает объекты по необходимости
 
 int main(int argc, const char * argv[])
 {
@@ -399,11 +441,55 @@ int main(int argc, const char * argv[])
      */
 #endif //SAVE_TO_FILE
     
+    Employee** department =  nullptr;
+    int n = 0; // Размер массива
+    ifstream fin("/Users/antonkurin/Documents/Cplusplus/DepartmentProjectInheritance/file.txt");
     
+    if(fin.is_open())
+    {
+        //1. Определеяем кол-во записей в файле, для того, чтобы выделить память под сотрудников
+        string employee_type;
+       
+        for (; !fin.eof(); n++) {
+            getline(fin, employee_type);
+        }
+        //n--;
+        //cout << n << endl;
+        //2. Выделяем память под массив:
+        department = new Employee*[n] {};
+        //3. Возвращаем курсор в начало файла:
+        //cout << fin.tellg() << endl;
+        fin.clear(); // Очищаем поток
+        fin.seekg(0); // Задаем расположение курсора
+        //cout << fin.tellg() << endl;
+        //4. Загружаем данные из файла в массив:
+        
+        for(int i = 0; i < n; ++i)
+        {
+            getline(fin, employee_type, ':');
+            department[i] = EmployeeFactory(employee_type);
+            fin >> *department[i];
+        }
+    }
+    else
+    {
+        cerr << "Error: file not found" << endl;
+    }
     
+    for(int i = 0; i < n; ++i)
+    {
+        cout << *department[i] << endl;
+    }
     
+    for(int i = 0; i < n; ++i)
+    {
+        delete department[i];
+    }
     
+    delete[] department;
+    fin.close();
     
+
     return 0;
 }
 
