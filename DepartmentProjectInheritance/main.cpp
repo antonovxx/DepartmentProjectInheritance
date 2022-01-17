@@ -63,11 +63,11 @@ public:
         //return os << last_name << " " << first_name << " " << age << " лет" << endl;
         os.width(8);
         os << left;
-        os << "Name: " << last_name << " ";
+        os << "|| Name: " << last_name << " ";
         os.width(8);
-        os << first_name << " ";
+        os << first_name << " |";
         os.width(5);
-        os << "Age: " << age << " years. ";
+        os << "| Age: " << age << " years |";
         return os;
     }
     virtual istream& input (istream& is)
@@ -122,7 +122,7 @@ public:
     {
         Human::print(os); // показываем, что print находится в именованном пространстве имен.
         os.width(5);
-        os << "Position: " << position << " ";
+        os << "| Position: " << position << " |";
         return os;
     }
     istream& input(istream& is)
@@ -170,7 +170,7 @@ public:
     {
         Employee::print(os);
         os.width(5);
-        os << "Salary: " << salary << " ";
+        os << "| Salary: " << salary << " ||";
         return os;
     }
     istream& input(istream& is)
@@ -231,8 +231,14 @@ public:
     }
     ostream& print(ostream& os) const
     {
-        Employee::print(os);
-        os << "Rate: " << rate << ". Worked out: " << hours << " hours. Salary: " << get_salary();
+        Employee::print(os) << " ";
+        os << right;
+        os.width(5);
+        os << "|| Rate: " << rate << " |";
+        os.width(10);
+        os << "| Worked out: " << hours << " hours |";
+        os.width(10);
+        os << "| Salary: " << get_salary() << " ||";
         return os;
     }
     istream& input(istream& is)
@@ -258,10 +264,10 @@ int main(int argc, const char * argv[])
     };
     
     // INPUT
-    for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
-    {
-        cin >> *department[i];
-    }
+//    for (int i = 0; i < sizeof(department) / sizeof(Employee*); ++i)
+//    {
+//        cin >> *department[i];
+//    }
     
     double total_salary = 0;
     

@@ -1,1 +1,4 @@
-17PermanentEmployee:Name:   Harry Potter   Age: 20 years. Position: witcher Salary: 20000 
+17PermanentEmployee:Name:   Chester Bennington Age: 35 years. Position: singer Salary: 20000 
+17PermanentEmployee:Name:   Mike Shinoda  Age: 34 years. Position: pianist Salary: 19000 
+17PermanentEmployee:Name:   Joe Hahn     Age: 38 years. Position: sampler Salary: 15000 
+14HourlyEmployee:   Name:   David Farrell  Age: 38 years. Position: guitarist      Rate: 1000Worked out: 8 hours. Salary: 8000
